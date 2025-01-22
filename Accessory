@@ -1,0 +1,120 @@
+getgenv().Time = 0.1 -- Adjust the time waited before adding the items
+
+getgenv().Head = {
+    14497025875,
+    93091654424461,
+    16154484061,
+    102564703432380,
+    18277525909,
+    12064732367
+    -- Add more head accessory IDs
+}
+
+getgenv().Torso = {
+    17335479520
+    -- Add more torso accessory IDs
+}
+
+--//------------------------------------------------------------------------------------------\\--
+
+local function weldParts(part0, part1, c0, c1)
+    local weld = Instance.new("Weld")
+    weld.Part0 = part0
+    weld.Part1 = part1
+    weld.C0 = c0
+    weld.C1 = c1
+    weld.Parent = part0
+    return weld
+end
+
+local function findAttachment(rootPart, name)
+    for _, descendant in pairs(rootPart:GetDescendants()) do
+        if descendant:IsA("Attachment") and descendant.Name == name then
+            return descendant
+        end
+    end
+end
+
+local function addAccessoryToCharacter(accessoryId, parentPart)
+    local accessory = game:GetObjects("rbxassetid://" .. tostring(accessoryId))[1]
+    local character = game.Players.LocalPlayer.Character
+
+    accessory.Parent = game.Workspace
+
+    local handle = accessory:FindFirstChild("Handle")
+    if handle then
+        local attachment = handle:FindFirstChildOfClass("Attachment")
+        if attachment then
+            local parentAttachment = findAttachment(parentPart, attachment.Name)
+            if parentAttachment then
+                weldParts(parentPart, handle, parentAttachment.CFrame, attachment.CFrame)
+            end
+        else
+            weldParts(parentPart, handle, CFrame.new(0, 0.5, 0), CFrame.new())
+        end
+    end
+
+    accessory.Parent = game.Players.LocalPlayer.Character
+end
+
+local function onCharacterAdded(character)
+    wait(getgenv().Time) -- Wait for the character to fully load
+
+    -- Add head accessories
+    for _, accessoryId in ipairs(getgenv().Head) do
+        addAccessoryToCharacter(accessoryId, character:FindFirstChild("Head"))
+    end
+
+    -- Add torso accessories
+    local torso = character:FindFirstChild("UpperTorso") or character:FindFirstChild("Torso")
+    for _, accessoryId in ipairs(getgenv().Torso) do
+        if torso then
+            addAccessoryToCharacter(accessoryId, torso)
+        end
+    end
+
+    -- Change shirt and pants templates
+    if character:FindFirstChild("Shirt") then
+        character.Shirt.ShirtTemplate = "http://www.roblox.com/asset/?id=11415772718"
+    end
+    if character:FindFirstChild("Pants") then
+        character.Pants.PantsTemplate = "http://www.roblox.com/asset/?id=6502343075"
+    end
+
+    -- Adjust for R6 or R15
+    if character:FindFirstChild("RightLowerLeg") then
+        -- R15 adjustments
+        local rightLeg = character:FindFirstChild("RightLowerLeg")
+        rightLeg.MeshId = "http://www.roblox.com/asset/?id=902942093" -- Korblox lower leg
+        rightLeg.Transparency = 1
+
+        local rightUpperLeg = character:FindFirstChild("RightUpperLeg")
+        if rightUpperLeg then
+            rightUpperLeg.MeshId = "http://www.roblox.com/asset/?id=902942096" -- Korblox upper leg
+            rightUpperLeg.TextureID = "http://www.roblox.com/asset/?id=902843398" -- Korblox texture
+        end
+
+        local rightFoot = character:FindFirstChild("RightFoot")
+        if rightFoot then
+            rightFoot.MeshId = "http://www.roblox.com/asset/?id=902942089" -- Korblox foot
+            rightFoot.Transparency = 1
+        end
+    else
+        -- R6 adjustments
+        local rightLeg = character:FindFirstChild("Right Leg")
+        if rightLeg then
+            -- Create and apply a new CharacterMesh for the Right Leg
+            local characterMesh = Instance.new("CharacterMesh")
+            characterMesh.BodyPart = Enum.BodyPart.RightLeg
+            characterMesh.MeshId = "http://www.roblox.com/asset/?id=101851696" -- Mesh ID
+            characterMesh.OverlayTextureId = "http://www.roblox.com/asset/?id=101851254" -- Overlay ID
+            characterMesh.Parent = character
+        end
+    end
+end
+
+game.Players.LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+
+if game.Players.LocalPlayer.Character then
+    onCharacterAdded(game.Players.LocalPlayer.Character)
+end
