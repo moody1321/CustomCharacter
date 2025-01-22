@@ -1,0 +1,32 @@
+    getgenv().emotesEnabled = false
+    getgenv().animationsEnabled = true
+    
+    getgenv().emotes = { -- you can have upto 8 emotes and you can call them whatever you want
+    cum=3823158750,
+    penis=3360692915,
+    cock=4212499637,
+    balls=7466046574,
+    TOWNY=3576747102,
+    obama=5917570207
+    }
+    
+    getgenv().animationPack = "" -- [leave blank to use the table below] to see a list of valid animations visit https://pastebin.com/raw/XppaAPF7
+    
+    getgenv().animations = { -- if you dont have an animation pack on it will use these
+    run = {'rbxassetid://707861613'},
+    walk = {'rbxassetid://707897309'},
+    jump = {'rbxassetid://782847020'},
+    idle = {
+    'rbxassetid://782841498',-- Animation1 (The order DOES matter)
+    'rbxassetid://782845736' -- Animation2
+    },
+    fall = {'rbxassetid://782846423'},
+    swim = {
+    'rbxassetid://973772659',-- swim (The order DOES matter)
+    'rbxassetid://656121397' -- swimIdle
+    },
+    climb = {'rbxassetid://782843869'}
+    }
+    
+    
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/moody1321/CustomCharacter/refs/heads/main/Animtion%20Source.lua'))()    
